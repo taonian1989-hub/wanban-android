@@ -1,0 +1,4 @@
+const http=require('http'),fs=require('fs'),path=require('path');
+const root=path.resolve(__dirname,'../app/src/main/assets');
+const allowed=new Set(['index.html','app.css','app.js','core.js','board_games.js','board_ui.js']);
+http.createServer((req,res)=>{if(req.url==='/favicon.ico'){res.writeHead(204);res.end();return;}if(req.url==='/standalone.html'){res.setHeader('Content-Type','text/html; charset=utf-8');fs.createReadStream(path.resolve(__dirname,'../outputs/玩伴_界面预览_v2.html')).pipe(res);return;}const name=req.url==='/'?'index.html':req.url.slice(1);if(!allowed.has(name)){res.writeHead(404);res.end();return;}res.setHeader('Content-Type',name.endsWith('.js')?'application/javascript':name.endsWith('.css')?'text/css':'text/html; charset=utf-8');fs.createReadStream(path.join(root,name)).pipe(res);}).listen(8804,'127.0.0.1',()=>console.log('Wanban browser preview http://127.0.0.1:8804 (model keys disabled)'));
